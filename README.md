@@ -46,30 +46,10 @@ The solution is a damped sinusoid: $x(z) \propto e^{-\xi z}\bigl(A\cos(\omega_d 
 
 ---
 
-## Installation
-
-```bash
-git clone <your-repo-url>
-cd <repo-name>
-pip install torch numpy matplotlib
-```
-
----
-
-## Usage
-
-From the repository root (so that the script can save plots and the model in the current directory):
-
-```bash
-python Vorlagen/GENIE5_PINN_sine_copy.py
-```
-
 Training runs on GPU if available. The script will:
 
 1. Train the PINN for 200,000 epochs.
-2. Save four figures and print an error summary.
-3. Save the trained model as `pinn_damped_oscillator.pt`.
-
+2. Save three figures and print an error summary.
 ---
 
 ## Results
@@ -87,14 +67,6 @@ Total loss and components (physics residual, IC1, IC2) in log scale.
 Comparison for $\xi = 0.1, 0.2, 0.3, 0.4$. Shaded area is the pointwise error.
 
 ![PINN vs analytical](plot_2_pinn_vs_analytical.png)
-
----
-
-### 3. Energy decay
-
-Mechanical energy $E(z) = \frac{1}{2}v^2 + \frac{1}{2}x^2$ from the PINN (solid) vs theoretical $E_0\,e^{-2\xi z}$ (dotted).
-
-![Energy decay](plot_3_energy_decay.png)
 
 ---
 
