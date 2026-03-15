@@ -109,7 +109,3 @@ Phase plane $x$ vs $dx/dz$ for each $\xi$. Inward spiral reflects correct dissip
 - Physics-Informed Neural Networks: [Raissi et al.](https://www.sciencedirect.com/science/article/pii/S0021999118307125).
 
 ---
-
-## License
-
-MIT (or your preferred license).
