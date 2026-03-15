@@ -8,22 +8,6 @@ Equation:  d²x/dz² + 2ξ·dx/dz + x = 0
 Domain:    z ∈ [0, 20]
 ICs:       x(0) = 0.7,  dx/dz(0) = 1.2
 ξ range:   0.1 to 0.4
-
-This version is built on the code that gave good results
-(0.246 for xi=0.1, <0.025 for others) with ONE key change:
-  Tanh → Sine activation (SIREN-style)
-
-Why sine works better for this problem:
-  The solution x(z) IS a sine/cosine wave times a decaying
-  exponential. A network made of sine activations can
-  represent this naturally. Tanh has to approximate it
-  using S-curves, which is much harder.
-
-The ONLY changes from the working version are:
-  1. Sin() class added
-  2. nn.Tanh() replaced with Sin()
-  3. Weight initialization changed to SIREN init
-  4. Input normalization added (helps sine networks)
 =============================================================
 """
 
@@ -43,9 +27,6 @@ print(f"Using device: {device}")
 # =============================================================
 # SINE ACTIVATION  (the only new class)
 # =============================================================
-# torch.sin() already exists but nn.Module wraps it so it
-# can be used inside nn.Sequential just like nn.Tanh()
-# =============================================================
 
 class Sin(nn.Module):
     def forward(self, x):
@@ -55,11 +36,6 @@ class Sin(nn.Module):
 # =============================================================
 # 1.  NETWORK
 # =============================================================
-# Identical structure to the working version EXCEPT:
-#   - Sin() instead of Tanh()
-#   - SIREN weight initialization
-#   - Input normalization before entering the network
-#
 # Input normalization:
 #   z  from [0, 20]    → [-1, 1]   via  z/10 - 1
 #   ξ  from [0.1, 0.4] → [-1, 1]   via  (ξ-0.25)/0.15
@@ -91,9 +67,6 @@ class PINN(nn.Module):
 
     def _initialize_weights(self):
         """
-        SIREN initialization — derived in the original paper.
-        Without this, sine networks give garbage output.
-
         First layer: uniform in [-1/n_in, 1/n_in]
             Keeps first-layer outputs in [-1, 1] so sin
             starts in its approximately-linear regime.
@@ -126,11 +99,6 @@ class PINN(nn.Module):
 # =============================================================
 # 2.  GRADIENT HELPER
 # =============================================================
-# Unchanged from the working version.
-# retain_graph=True is essential — without it the second
-# gradient call (for d²x/dz²) crashes because the graph
-# from the first call has been freed.
-# =============================================================
 
 def gradient(output, input_var):
     return torch.autograd.grad(
@@ -158,10 +126,8 @@ def analytical_solution(z_np, xi_val):
 
 # =============================================================
 # 4.  LOSS FUNCTION
-# =============================================================
-# Unchanged from the working version.
 # physics + 10*ic1 + 10*ic2
-# 5000 collocation points (more than the original 3000)
+# 5000 collocation points 
 # =============================================================
 
 def compute_losses(model, N_physics=5000, N_ic=500):
@@ -211,13 +177,7 @@ def compute_losses(model, N_physics=5000, N_ic=500):
 
 
 # =============================================================
-# 5.  TRAINING
-# =============================================================
-# Scheduler milestones tuned for 40k epochs.
-# Sine networks sometimes need a slightly lower learning rate
-# than Tanh networks — using 5e-4 instead of 1e-3 to be safe.
-# If you see loss going to NaN in first 500 epochs,
-# reduce to 1e-4.
+# 5.  TRAINING - SINE activations need a bit lower LR than tanh empirically seen
 # =============================================================
 
 def train(model, epochs=200000, lr=5e-4):
@@ -268,7 +228,7 @@ def train(model, epochs=200000, lr=5e-4):
 
 
 # =============================================================
-# 6.  PLOTS  (unchanged from working version)
+# 6.  PLOTS 
 # =============================================================
 
 def plot_loss_curves(history):
