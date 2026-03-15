@@ -99,9 +99,7 @@ Phase plane $x$ vs $dx/dz$ for each $\xi$. Inward spiral reflects correct dissip
 |------|-------------|
 | `plot_1_loss_curves.png` | Total and component losses vs epoch |
 | `plot_2_pinn_vs_analytical.png` | PINN vs exact solution for four $\xi$ values |
-| `plot_3_energy_decay.png` | Energy decay vs $z$ |
 | `plot_4_phase_portrait.png` | Phase portraits for four $\xi$ values |
-| `pinn_damped_oscillator.pt` | Trained PyTorch state dict |
 
 ---
 
