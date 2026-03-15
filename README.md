@@ -20,6 +20,21 @@ The solution is a damped sinusoid: $x(z) \propto e^{-\xi z}\bigl(A\cos(\omega_d 
 
 ---
 
+## PINN Accuracy Summary
+
+```
+======================================================
+       ξ |   Max Abs Error |             MSE
+------------------------------------------------------
+     0.1 |      0.03507042 |      0.00029652 ✓
+     0.2 |      0.00256794 |      0.00000115 ✓
+     0.3 |      0.00180524 |      0.00000099 ✓
+     0.4 |      0.00485858 |      0.00000476 ✓
+======================================================
+```
+
+---
+
 ## Why Sine (SIREN) Activations?
 
 - The analytical solution is **sinusoidal in space** with an exponential envelope. A network built from **sine activations** can represent this structure naturally.
